@@ -26,11 +26,17 @@ def createFolder(index, parent):
     os.chdir(path)
 
 '''  This function reads the csv file from CLZ and returns a list of the index numbers in a Python list '''
-### NEED TO DO ###
 def getIndexNums(csvFile):
-    with open(csvFile, newline=''):
-        indReader = csv.reader(csvFile)
-        indexList = []
+    indexList = []
+    indInd = 0
+    with open(csvFile, newline = '') as file:
+        indReader = csv.reader(file)  # Create reader object
+        headerLine = indReader.__next__()  # Store the first line of column headers
+        for i in range(len(headerLine)):  # Iterate across the column headers
+            if headerLine[i] == 'Index':  # Find the column of the Index numbers
+                indInd = i
+        for line in indReader:  # Store all the indexes into a list to return
+            indexList += [line[indInd]]
     return indexList
 
 #####################
@@ -40,10 +46,14 @@ def getIndexNums(csvFile):
 # Get parent directory from user
 top = input('Please enter the directory in which to store the pictures: ')
 
+# Change working directory to read csv file
+os.chdir(top)
+
+
 # Get the list of indexs from the .csv file
-# file = input('Please enter the csv file name: ')
-# file = file + '.csv'
-indexes = [12345, 67891]
+file = input('Please enter the csv file name: ')
+file = file + '.csv'
+indexes = getIndexNums(file)
 
 # Open and set size of camera
 cap = cv2.VideoCapture(0)
