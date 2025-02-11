@@ -65,8 +65,9 @@ if not cap.isOpened():
 
 # Loop through the indexes of the comics
 for i in indexes:
-    createFolder(str(i), top)    # Make and change to the directory
+    createFolder(i, top)    # Make and change to the directory
     picCount = 1    # Set count for multiple pictures of the same comic
+    print('Taking pictures for comic index', i)
     while True:
         sucess, frame = cap.read()
         if not sucess:
@@ -75,8 +76,8 @@ for i in indexes:
         cv2.imshow('Camera Window', frame)  # Show the stream of video
         # Take the pictures and save it to a file in the folder
         if cv2.waitKey(1) == ord('p'):
-            cv2.imwrite(str(i) + '_' + str(picCount) + '.jpg', frame)
-            print(f'Successfully took picture {picCount}')
+            cv2.imwrite(i + '_' + str(picCount) + '.jpg', frame)
+            print(f'Successfully took picture {picCount} of', i)
             picCount += 1
             time.sleep(1)
 
