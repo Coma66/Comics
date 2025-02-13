@@ -11,7 +11,6 @@ Check the Visual Studio C++ Distibutable if there are issues inporting pyzbar ''
 # Import libraries
 ######################
 import cv2  # Read/Capture camera or images
-from pyzbar.pyzbar import decode
 import time
 import os
 import csv
@@ -25,19 +24,24 @@ def createFolder(index, parent):
     os.mkdir(path)
     os.chdir(path)
 
-'''  This function reads the csv file from CLZ and returns a list of the index numbers in a Python list '''
+'''  This function reads the csv file from CLZ and returns a list of the index numbers in a Python list, and comic names in another Python list '''
 def getIndexNums(csvFile):
     indexList = []
     indInd = 0
+    nameList = []
+    indName = 0
     with open(csvFile, newline = '') as file:
         indReader = csv.reader(file)  # Create reader object
         headerLine = indReader.__next__()  # Store the first line of column headers
         for i in range(len(headerLine)):  # Iterate across the column headers
             if headerLine[i] == 'Index':  # Find the column of the Index numbers
                 indInd = i
-        for line in indReader:  # Store all the indexes into a list to return
+            elif headerLine[i] == 'Series':  # Find the column of the comic Name
+                indName = i
+        for line in indReader:  # Store all the indexes and names into a list each to return
             indexList += [line[indInd]]
-    return indexList
+            nameList += [line[indName]]
+    return indexList, nameList
 
 #####################
 # Main Program
@@ -53,7 +57,7 @@ os.chdir(top)
 # Get the list of indexs from the .csv file
 file = input('Please enter the csv file name: ')
 file = file + '.csv'
-indexes = getIndexNums(file)
+indexes, names = getIndexNums(file)
 
 # Open and set size of camera
 cap = cv2.VideoCapture(0)
@@ -64,10 +68,11 @@ if not cap.isOpened():
     print('Cannot open camera')
 
 # Loop through the indexes of the comics
+nameCount = 0  # Set count for number of comics
 for i in indexes:
     createFolder(i, top)    # Make and change to the directory
     picCount = 1    # Set count for multiple pictures of the same comic
-    print('Taking pictures for comic index', i)
+    print('Taking pictures for', names[nameCount])
     while True:
         sucess, frame = cap.read()
         if not sucess:
@@ -77,12 +82,13 @@ for i in indexes:
         # Take the pictures and save it to a file in the folder
         if cv2.waitKey(1) == ord('p'):
             cv2.imwrite(i + '_' + str(picCount) + '.jpg', frame)
-            print(f'Successfully took picture {picCount} of', i)
+            print(f'Successfully took picture {picCount} of', names[nameCount])
             picCount += 1
             time.sleep(1)
 
         if cv2.waitKey(1) == ord('q'):  # Stop taking pictures for this index
             print('Moving to next comic')
+            nameCount += 1  # Increment comic count
             time.sleep(3)
             break
 
