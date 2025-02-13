@@ -71,15 +71,8 @@ for i in range(0, len(indexes)):
         imageList.append(cv2.imread(pics[j]))  #  Read the picture in the folder and add to the image list
         imageName.append(str(picCount) + '_' + pics[j])  #  Add new save name to the image list
         picCount += 1  #  Increment the total picture counter
-        # cv2.imshow(pics[j], image)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
 
 os.chdir(newFold)  #  Change directory to the new storage folder
-
-# print(len(pics))
-# print(len(indexes))
-# print(len(imageList))
 
 #  Loop through images and save to new folder
 for k in range(0, len(imageList)):
