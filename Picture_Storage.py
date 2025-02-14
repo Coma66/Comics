@@ -47,50 +47,54 @@ def getIndexNums(csvFile):
 # Main Program
 #####################
 
-# Get parent directory from user
-top = input('Please enter the directory in which to store the pictures: ')
+def main():
 
-# Change working directory to read csv file
-os.chdir(top)
+    # Get parent directory from user
+    top = input('Please enter the directory in which to store the pictures: ')
+
+    # Change working directory to read csv file
+    os.chdir(top)
 
 
-# Get the list of indexs from the .csv file
-file = input('Please enter the csv file name: ')
-file = file + '.csv'
-indexes, names = getIndexNums(file)
+    # Get the list of indexs from the .csv file
+    file = input('Please enter the csv file name: ')
+    file = file + '.csv'
+    indexes, names = getIndexNums(file)
 
-# Open and set size of camera
-cap = cv2.VideoCapture(0)
-cap.set(3, 640)  # 3 - Width
-cap.set(4, 480)  # 4 - Height
+    # Open and set size of camera
+    cap = cv2.VideoCapture(0)
+    cap.set(3, 640)  # 3 - Width
+    cap.set(4, 480)  # 4 - Height
 
-if not cap.isOpened():
-    print('Cannot open camera')
+    if not cap.isOpened():
+        print('Cannot open camera')
 
-# Loop through the indexes of the comics
-nameCount = 0  # Set count for number of comics
-for i in indexes:
-    createFolder(i, top)    # Make and change to the directory
-    picCount = 1    # Set count for multiple pictures of the same comic
-    print('Taking pictures for', names[nameCount])
-    while True:
-        sucess, frame = cap.read()
-        if not sucess:
-            print('Cannot recieve frame, exiting...')
-            break
-        cv2.imshow('Camera Window', frame)  # Show the stream of video
-        # Take the pictures and save it to a file in the folder
-        if cv2.waitKey(1) == ord('p'):
-            cv2.imwrite(i + '_' + str(picCount) + '.jpg', frame)
-            print(f'Successfully took picture {picCount} of', names[nameCount])
-            picCount += 1
-            time.sleep(1)
+    # Loop through the indexes of the comics
+    nameCount = 0  # Set count for number of comics
+    for i in indexes:
+        createFolder(i, top)    # Make and change to the directory
+        picCount = 1    # Set count for multiple pictures of the same comic
+        print('Taking pictures for', names[nameCount])
+        while True:
+            sucess, frame = cap.read()
+            if not sucess:
+                print('Cannot recieve frame, exiting...')
+                break
+            cv2.imshow('Camera Window', frame)  # Show the stream of video
+            # Take the pictures and save it to a file in the folder
+            if cv2.waitKey(1) == ord('p'):
+                cv2.imwrite(i + '_' + str(picCount) + '.jpg', frame)
+                print(f'Successfully took picture {picCount} of', names[nameCount])
+                picCount += 1
+                time.sleep(1)
 
-        if cv2.waitKey(1) == ord('q'):  # Stop taking pictures for this index
-            print('Moving to next comic')
-            nameCount += 1  # Increment comic count
-            time.sleep(3)
-            break
+            if cv2.waitKey(1) == ord('q'):  # Stop taking pictures for this index
+                print('Moving to next comic')
+                nameCount += 1  # Increment comic count
+                time.sleep(3)
+                break
 
-cap.release
-cv2.destroyAllWindows()
+    cap.release
+    cv2.destroyAllWindows()
+
+main()
