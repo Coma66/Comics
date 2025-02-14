@@ -56,21 +56,27 @@ indexes, names = getIndexNums(file)
 newFold = os.path.join(top, 'Sold Comics')
 os.mkdir(newFold)
 
-#  Initialize total picture counter and image list and new save name list
+#  Initialize total picture counter, image list, new save name list, and which pic to grab from each index folder
 picCount = 1
 imageList = []
 imageName = []
+SOLD_PIC = 0
 
-#  Loop through the folders and copy pictures to sold folder
+#  Loop through the folders and copy the first picture in each folder to sold folder
 for i in range(0, len(indexes)):
     os.chdir(os.path.join(top, indexes[i]))  #  Change the directory to the current index picture folder
     pics = os.listdir()  #  Get the list of pictures in the folder
 
-    #  Loop through the pictures in the folder
-    for j in range(0, len(pics)):
-        imageList.append(cv2.imread(pics[j]))  #  Read the picture in the folder and add to the image list
-        imageName.append(str(picCount) + '_' + pics[j])  #  Add new save name to the image list
-        picCount += 1  #  Increment the total picture counter
+    #  Get first pic in folder
+    imageList.append(cv2.imread(pics[SOLD_PIC]))  #  Read the first picture in the folder and add to the image list
+    imageName.append(str(picCount) + '_' + pics[SOLD_PIC])  #  Add new save name to the image list
+    picCount += 1  #  Increment the total picture counter
+
+    #  Loop through the pictures in the folder (KEEPING FOR HISTORY, BUT ONLY NEED FIRST PICTURE FROM EACH INDEX FOLDER PER CUSTOMER REQUEST)
+    # for j in range(0, len(pics)):
+    #     imageList.append(cv2.imread(pics[j]))  #  Read the picture in the folder and add to the image list
+    #     imageName.append(str(picCount) + '_' + pics[j])  #  Add new save name to the image list
+    #     picCount += 1  #  Increment the total picture counter
 
 os.chdir(newFold)  #  Change directory to the new storage folder
 
