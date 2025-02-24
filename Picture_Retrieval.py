@@ -1,6 +1,6 @@
 # Picture Storage Program
 # Chris Galler
-''' This file program takes a list of indexes from a csv and retrieves the corresponding pictures from local storage '''
+''' This file program takes a list of indexes from a csv and retrieves the corresponding pictures (only the first one) from local storage '''
 
 ''' Need to install pyzbar and cv2 packages from Command Shell
 pip install pyzbar
@@ -17,12 +17,14 @@ import csv
 #####################
 # Function definition
 #####################
-'''  This function reads the csv file from CLZ and returns a list of the index numbers in a Python list, and comic names in another Python list '''
+'''  This function reads the csv file from CLZ and returns a list of the index numbers, comic names, and issue numbers in respective Python lists '''
 def getIndexNums(csvFile):
     indexList = []
     indInd = 0
     nameList = []
     indName = 0
+    numList = []
+    indNum = 0
     with open(csvFile, newline = '') as file:
         indReader = csv.reader(file)  # Create reader object
         headerLine = indReader.__next__()  # Store the first line of column headers
@@ -31,10 +33,13 @@ def getIndexNums(csvFile):
                 indInd = i
             elif headerLine[i] == 'Series':  # Find the column of the comic Name
                 indName = i
+            elif headerLine[i] == 'Issue Nr':  # Find the column of the comic issue numbers
+                indNum = i
         for line in indReader:  # Store all the indexes and names into a list each to return
-            indexList += [line[indInd]]
-            nameList += [line[indName]]
-    return indexList, nameList
+            indexList.append(line[indInd])
+            nameList.append(line[indName])
+            numList.append(line[indNum])
+    return indexList, nameList, numList
 
 #####################
 # Main Program
@@ -51,7 +56,7 @@ def main():
     # Get the list of indexs from the .csv file
     file = input('Please enter the csv file name: ')
     file = file + '.csv'
-    indexes, names = getIndexNums(file)
+    indexes, names, issues = getIndexNums(file)
 
     #  Make a new folder to store all pictures
     newFold = os.path.join(top, 'Sold Comics')
