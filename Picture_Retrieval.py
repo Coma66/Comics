@@ -36,9 +36,12 @@ def getIndexNums(csvFile):
             elif headerLine[i] == 'Issue Nr':  # Find the column of the comic issue numbers
                 indNum = i
         for line in indReader:  # Store all the indexes and names into a list each to return
-            indexList.append(line[indInd])
-            nameList.append(line[indName])
-            numList.append(line[indNum])
+            if line[indInd] != '':
+                indexList.append(line[indInd])
+            if line[indName] != '':
+                nameList.append(line[indName])
+            if line[indNum] != '':
+                numList.append(line[indNum])
     return indexList, nameList, numList
 
 #####################
@@ -54,12 +57,12 @@ def main():
 
 
     # Get the list of indexs from the .csv file
-    file = input('Please enter the csv file name: ')
-    file = file + '.csv'
+    file_fold = input('Please enter the csv file name: ')
+    file = file_fold + '.csv'
     indexes, names, issues = getIndexNums(file)
 
     #  Make a new folder to store all pictures
-    newFold = os.path.join(top, 'Sold Comics')
+    newFold = os.path.join(top, file_fold)
     os.mkdir(newFold)
 
     #  Initialize total picture counter, image list, new save name list, and which pic to grab from each index folder
